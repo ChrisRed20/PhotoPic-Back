@@ -1,5 +1,6 @@
 const Usuario = require('../models/userModel');
 const jwt = require('jsonwebtoken');
+const crypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 
 // Configurar nodemailer
@@ -17,45 +18,26 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.crearUsuario = async (req, res) => {
-    const { email, password } = req.body;
 
     try {
-        let usuario = await Usuario.findOne({ email }); 
-        // Revisar si el usuario ya existe
-        if (usuario) {
-            return res.status(400).json({ msg: 'El usuario ya existe' });
-        } 
+        const { name, lastName, email, password } = req.body;
+
+        // Verificar si el usuario ya existe
+        let user = await Usuario.findOne({ email });
+        if (user) return res.status(400).json({ msg: 'El usuario ya está registrado' });
+
+        // Encriptar la contraseña
+        const salt = await crypt.genSalt(10);
+        const hashedPassword = await crypt.hash(password, salt);
+
         // Crear nuevo usuario
-        usuario = new Usuario(req.body); // Hashear el password
-        // Guardar usuario
-        await usuario.save();
-        // Crear y firmar el JWT
-        const payload = {usuario: {id: usuario.id}};
-        // Firmar el JWT
-        jwt.sign(payload, process.env.SECRET, { expiresIn: 3600 }, (error, token) => {
-            if (error) throw error; 
-            // Mensaje de confirmación
-            res.json({ token });
-        });
+        user = new Usuario({ name, lastName, email, password: hashedPassword });
+        await user.save();
+
+        res.status(201).json({ msg: 'Usuario registrado exitosamente' });
     } catch (error) {
-        console.log(error);
-        res.status(400).send('Hubo un error');
-    } 
-    // Enviar email de confirmación
-    const mailOptions = {
-        from: process.env.EMAIL,
-        to: email,
-        subject: 'Bienvenido a la app',
-        text: 'Bienvenido a la app'
-    }; 
-    // Enviar email
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
+        res.status(500).json({ msg: 'Error en el servidor' });
+    }
 }
 
 exports.autenticarUsuario = async (req, res) => {
@@ -67,9 +49,8 @@ exports.autenticarUsuario = async (req, res) => {
             return res.status(400).json({ msg: 'El usuario no existe' });
         }
         // Revisar el password
-        if (password === usuario.password) {
-            return res.status(400).json({ msg: 'Password incorrecto' });
-        }
+        const validPassword = await crypt.compare(password, usuario.password);
+        if (!validPassword) return res.status(400).json({ msg: 'Contraseña incorrecta' });
         // Si todo es correcto
         const payload = {
             usuario: { id: usuario.id }
