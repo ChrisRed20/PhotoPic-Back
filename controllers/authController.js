@@ -36,7 +36,7 @@ exports.crearUsuario = async (req, res) => {
 
         res.status(201).json({ msg: 'Usuario registrado exitosamente' });
     } catch (error) {
-        res.status(500).json({ msg: 'Error en el servidor' });
+        res.status(500).json({ msg: `Error en el servidor: ${error}` });
     }
 }
 
