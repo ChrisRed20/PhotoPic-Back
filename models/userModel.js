@@ -23,6 +23,14 @@ const userSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
+    clients: {
+        type: Array,
+        default: []
+    },
+    logo: {
+        type: String,
+        default: 'default.png'
+    },
     newUser: {
         type: Boolean,
         default: true
@@ -35,4 +43,6 @@ const userSchema = mongoose.Schema({
     versionKey: false
 });
 
-module.exports = mongoose.model('User', userSchema);
+const Users = mongoose.model('User', userSchema);
+
+module.exports = Users;
