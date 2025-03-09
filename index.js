@@ -3,7 +3,7 @@ const conectarDB = require('./config/db');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 const swaggerUI = require('swagger-ui-express')
-const specs = require('./swagger/swagger.js')
+// const specs = require('./swagger/swagger.js')
 // import swaggerUI from 'swagger-ui-express';
 // import specs from './swagger/swagger.js';
 
@@ -16,7 +16,7 @@ conectarDB();
 // Habilitar cors
 app.use(cors());
 // Swagger
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
+// app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.use(express.json());
 
 // Puerto de la app
