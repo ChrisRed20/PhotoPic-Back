@@ -30,6 +30,8 @@ const PORT = process.env.PORT || 4000;
 app.use('/api/usuarios', require('./routes/userRoute'));
 app.use('/api/auth', require('./routes/authRoute'));
 app.use('/api/enterprise', require('./routes/enterpriseRoute'));
+app.use('/api/photographer', require('./routes/photographerRoute'));
+app.use('/api/session', require('./routes/sessionRoute'));
 
 // Arrancar la app
 app.listen(PORT, () => {

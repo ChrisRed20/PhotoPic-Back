@@ -34,7 +34,21 @@ exports.crearUsuario = async (req, res) => {
         user = new Usuario({ name, lastName, email, password: hashedPassword });
         await user.save();
 
-        res.status(201).json({ msg: 'Usuario registrado exitosamente' });
+        // Generar token
+        const payload = {
+            usuario: { id: user.id }
+        };
+        jwt.sign(payload, process.env.SECRET, { expiresIn: 3600 }, (error, token) => {
+            if (error) throw error;
+            res.status(201).json({ 
+                msg: 'Usuario registrado exitosamente',
+                token,
+                user: { // Include user data in the response
+                    name: user.name,
+                    newUser: user.newUser
+                }
+            });
+        });
     } catch (error) {
         res.status(500).json({ msg: `Error en el servidor: ${error}` });
     }
@@ -61,6 +75,7 @@ exports.autenticarUsuario = async (req, res) => {
             res.json({ 
                 token,
                 user: { // Include user data in the response
+                    id: usuario.id,
                     name: usuario.name,
                     newUser: usuario.newUser
                 }

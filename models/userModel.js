@@ -23,14 +23,10 @@ const userSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
-    clients: {
-        type: Array,
-        default: []
-    },
-    logo: {
-        type: String,
-        default: 'default.png'
-    },
+    sessions: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Session'
+    }],
     newUser: {
         type: Boolean,
         default: true
