@@ -1,19 +1,26 @@
 const Session = require('../models/sessionModel');
+const { v4: uuidv4 } = require('uuid');
+
+function generateAccessCode() {
+    return uuidv4().split('-').join('').toUpperCase().substring(0, 6);
+}
 
 // Create a new photo session
 exports.createSession = async (req, res) => {
     try {
-        const { photographer, client, date, location, accesCode } = req.body;
+        const { photographer, albumName, date, location } = req.body;
 
-        if (!photographer || !date || !accesCode) {
-            return res.status(400).send('Photographer, date and access code are required');
+        if (!photographer || !date || !albumName) {
+            return res.status(400).send('Photographer, date, album name are required');
         }
 
-        const session = new Session({ photographer, client, date, location, accesCode });
+        const accesCode = generateAccessCode();
+        const session = new Session({ photographer, albumName, date, location, accesCode });
         await session.save();
         res.status(201).send(session);
     } catch (error) {
         res.status(400).send(error);
+        console.log(error);
     }
 };
 
@@ -78,6 +85,23 @@ exports.updateSession = async (req, res) => {
         res.status(400).send(error);
     }
 };
+
+// Assign a client to a photo session
+exports.assignClient = async (req, res) => {
+    try {
+        const session = await Session.findOneAndUpdate({ accesCode: req.body.accessCode }, { client: req.body.client }, { new: true, runValidators: true });
+        if (!session) {
+            return res.status(404).json({ msg: 'Sesion no encontrada' });
+        }
+        res.status(200).json({ 
+            msg: 'Client assigned to session',
+            session: session    
+        });
+    } catch (error) {
+        res.status(400).send(error);
+        console.log(error);
+    }
+}
 
 // Delete a photo session by ID
 exports.deleteSession = async (req, res) => {

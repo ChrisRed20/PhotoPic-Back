@@ -21,6 +21,9 @@ router.post('/create', sessionController.createSession);
 // Ruta para actualizar una sesión de fotos por ID
 router.put('/edit/:id', sessionController.updateSession);
 
+// Ruta para asignar usuario a sesión de fotos
+router.put('/assign', sessionController.assignClient);
+
 // Ruta para eliminar una sesión de fotos por ID
 router.delete('/delete/:id', sessionController.deleteSession);
 

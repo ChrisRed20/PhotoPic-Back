@@ -12,6 +12,10 @@ const sessionSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
     },
+    albumName: {
+        type: String,
+        required: true
+    },
     date: {
         type: Date,
         required: true
