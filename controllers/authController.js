@@ -76,8 +76,8 @@ exports.autenticarUsuario = async (req, res) => {
                 token,
                 user: { // Include user data in the response
                     id: usuario.id,
-                    name: usuario.name,
-                    newUser: usuario.newUser
+                    name: usuario.name + ' ' + usuario.lastName,
+                    email: usuario.email,
                 }
             });
         });

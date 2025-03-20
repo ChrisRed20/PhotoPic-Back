@@ -33,6 +33,10 @@ const sessionSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Photo'
     }],
+    revised: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now
