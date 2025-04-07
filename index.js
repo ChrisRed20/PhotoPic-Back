@@ -4,6 +4,7 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const swaggerUI = require('swagger-ui-express');
 const morgan = require('morgan');
+const compression = require('compression');
 // const specs = require('./swagger/swagger.js')
 // import swaggerUI from 'swagger-ui-express';
 // import specs from './swagger/swagger.js';
@@ -16,6 +17,8 @@ conectarDB();
 
 // Habilitar cors
 app.use(cors());
+// Habilitar compresión
+app.use(compression());
 // Swagger
 // app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.use(express.json());
