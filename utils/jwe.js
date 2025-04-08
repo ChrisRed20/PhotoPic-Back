@@ -1,10 +1,10 @@
-const { CompactEncrypt } = require('jose');
 const crypto = require('crypto');
 const { TextEncoder } = require('util');
 
 const secretKey = process.env.JWE_SECRET || 'clave-ultra-secreta-1234567890123456'; // 32 caracteres
 
 async function encryptPayload(payload) {
+  const { CompactEncrypt } = await import('jose'); // Importación dinámica
   const encoder = new TextEncoder();
   const key = encoder.encode(secretKey); // 32 bytes para A256GCM
 
